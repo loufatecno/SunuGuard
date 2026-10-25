@@ -81,12 +81,24 @@
                 android:src="@drawable/cfc_logo" />
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/cfc_about"
-                android:autoLink="all"
+                android:autoLink="email|phone"
+                android:lineSpacingExtra="4dp"
+                android:layout_marginBottom="12dp"
+                android:textAppearance="@style/TextSmall"
+                android:textSize="15sp" />
+
+            <Button
+                android:id="@+id/btnWhatsapp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                android:textAppearance="@style/TextSmall" />
+                android:text="@string/cfc_whatsapp"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                android:backgroundTint="#25D366" />
 
             <TextView
                 android:layout_width="wrap_content"

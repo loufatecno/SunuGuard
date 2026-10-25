@@ -1627,6 +1627,21 @@ public class ActivityMain extends AppCompatActivity implements SharedPreferences
             }
         });
 
+        // SunuGuard (CFC) : bouton Support WhatsApp
+        Button btnWhatsapp = view.findViewById(R.id.btnWhatsapp);
+        if (btnWhatsapp != null) {
+            btnWhatsapp.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    try {
+                        startActivity(new Intent(Intent.ACTION_VIEW,
+                                Uri.parse("https://wa.me/221775674725")));
+                    } catch (Exception ignored) {
+                    }
+                }
+            });
+        }
+
         // Show dialog
         dialogAbout = new MaterialAlertDialogBuilder(this)
                 .setView(view)
