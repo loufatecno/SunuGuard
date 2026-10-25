@@ -24,24 +24,44 @@ public class BlocklistManager {
     private static final String TAG = "TrackerControl.Blocklist";
     private static final String PREF_BLOCKLISTS = "blocklists";
     public static final String DEFAULT_HOSTS_URL = "https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts";
-    // SunuGuard (CFC) : listes anti-phishing/arnaque ajoutees par defaut (format hosts).
-    public static final String CFC_THREATS_URL = "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/hosts/tif.txt";
+    // SunuGuard (CFC) : listes par defaut (format hosts, sources fiables).
+    public static final String CFC_PHISHING_URL = "https://raw.githubusercontent.com/blocklistproject/Lists/master/phishing.txt";
+    public static final String CFC_SCAM_URL = "https://raw.githubusercontent.com/blocklistproject/Lists/master/scam.txt";
     public static final String CFC_SENEGAL_SCAM_URL = "https://raw.githubusercontent.com/loufatecno/SunuGuard/main/blocklists/senegal-scams.txt";
-    // SunuGuard (CFC) : blocage des sites adultes / pornographiques (protection
-    // familiale/enfants). Activee par defaut, desactivable dans l'ecran des listes.
-    public static final String CFC_ADULT_URL = "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/hosts/nsfw.txt";
+    // Blocage des sites adultes / pornographiques (protection enfants/famille).
+    public static final String CFC_ADULT_URL = "https://raw.githubusercontent.com/blocklistproject/Lists/master/porn.txt";
+
+    // Anciennes URLs cassees (404) a retirer des installations existantes.
+    private static final String[] BROKEN_URLS = {
+            "hagezi/dns-blocklists/main/hosts/tif.txt",
+            "hagezi/dns-blocklists/main/hosts/nsfw.txt"
+    };
 
     /**
-     * SunuGuard : seme les listes de blocage par defaut (pubs + malware + phishing
-     * + arnaques Senegal) si elles ne sont pas deja presentes. Toutes activees.
+     * SunuGuard : seme les listes par defaut (pubs + malware + phishing + arnaques
+     * + sites adultes) si absentes, et retire les anciennes URLs cassees.
      */
     public void seedDefaults() {
         List<Blocklist> list = getBlocklists();
+        boolean changed = false;
+        // Retirer les anciennes listes cassees (404)
+        java.util.Iterator<Blocklist> it = list.iterator();
+        while (it.hasNext()) {
+            Blocklist b = it.next();
+            if (b.url == null) continue;
+            for (String bad : BROKEN_URLS) {
+                if (b.url.contains(bad)) {
+                    it.remove();
+                    changed = true;
+                    break;
+                }
+            }
+        }
         java.util.Set<String> urls = new java.util.HashSet<>();
         for (Blocklist b : list)
             urls.add(b.url);
-        String[] defaults = {DEFAULT_HOSTS_URL, CFC_THREATS_URL, CFC_SENEGAL_SCAM_URL, CFC_ADULT_URL};
-        boolean changed = false;
+        String[] defaults = {DEFAULT_HOSTS_URL, CFC_PHISHING_URL, CFC_SCAM_URL,
+                CFC_SENEGAL_SCAM_URL, CFC_ADULT_URL};
         for (String u : defaults) {
             if (!TextUtils.isEmpty(u) && !urls.contains(u)) {
                 list.add(new Blocklist(u, true));
