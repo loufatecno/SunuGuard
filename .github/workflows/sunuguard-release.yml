@@ -58,7 +58,22 @@ jobs:
           SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
           SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
           SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
-        run: ./gradlew :app:assembleGithubRelease --no-daemon --stacktrace
+        run: |
+          set -o pipefail
+          ./gradlew :app:assembleGithubRelease --no-daemon --stacktrace 2>&1 \
+            | tee "$RUNNER_TEMP/build.log"
+
+      - name: Publier le log en cas d'echec (diagnostic)
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          tail -c 120000 "$RUNNER_TEMP/build.log" > "$RUNNER_TEMP/build-tail.txt" || echo "pas de log" > "$RUNNER_TEMP/build-tail.txt"
+          gh release delete build-log --repo "${{ github.repository }}" --yes --cleanup-tag 2>/dev/null || true
+          gh release create build-log "$RUNNER_TEMP/build-tail.txt" \
+            --repo "${{ github.repository }}" \
+            --title "Diagnostic build log" \
+            --notes "Log d'erreur du dernier build release."
 
       - name: Verifier et publier l'APK signe
         env:
