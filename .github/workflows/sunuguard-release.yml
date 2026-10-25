@@ -1,0 +1,82 @@
+name: Build SunuGuard APK (release signee CFC)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sunuguard-release
+  cancel-in-progress: true
+
+jobs:
+  release:
+    name: Build githubRelease signee
+    runs-on: ubuntu-22.04
+    timeout-minutes: 60
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: temurin
+
+      - name: Install pinned Android build tools
+        run: |
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" \
+            "platforms;android-37.0" \
+            "build-tools;36.1.0" \
+            "cmake;3.22.1" \
+            "ndk;27.2.12479018"
+          echo "ANDROID_NDK_HOME=$ANDROID_HOME/ndk/27.2.12479018" >> "$GITHUB_ENV"
+          echo "ANDROID_NDK_ROOT=$ANDROID_HOME/ndk/27.2.12479018" >> "$GITHUB_ENV"
+
+      - name: Set up Rust toolchain for Android (wgbridge)
+        run: ./scripts/setup_rust_android.sh
+
+      - name: Decode signing keystore
+        env:
+          SIGNING_KEYSTORE_BASE64: ${{ secrets.SIGNING_KEYSTORE_BASE64 }}
+        run: |
+          if [ -z "$SIGNING_KEYSTORE_BASE64" ]; then
+            echo "::error::Le secret SIGNING_KEYSTORE_BASE64 est manquant. Ajoutez les 4 secrets de signature dans les reglages du depot."
+            exit 1
+          fi
+          echo "$SIGNING_KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/sunuguard-release.jks"
+          echo "SIGNING_KEYSTORE_FILE=$RUNNER_TEMP/sunuguard-release.jks" >> "$GITHUB_ENV"
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Build githubRelease (signee)
+        env:
+          SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
+          SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
+          SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
+        run: ./gradlew :app:assembleGithubRelease --no-daemon --stacktrace
+
+      - name: Verifier et publier l'APK signe
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          APK=$(find app/build/outputs/apk/github/release -name '*.apk' | head -1)
+          echo "APK: $APK"
+          "$ANDROID_HOME/build-tools/36.1.0/apksigner" verify --verbose "$APK"
+          cp "$APK" SunuGuard-release.apk
+          gh release delete release-latest --repo "${{ github.repository }}" --yes --cleanup-tag 2>/dev/null || true
+          gh release create release-latest SunuGuard-release.apk \
+            --repo "${{ github.repository }}" \
+            --title "SunuGuard — version finale signee (CFC)" \
+            --notes "APK release signe avec la cle CFC. Installable et mettable a jour par-dessus. Autoriser les sources inconnues a l'installation."
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: SunuGuard-release-apk
+          path: app/build/outputs/apk/github/release/*.apk
+          if-no-files-found: error
