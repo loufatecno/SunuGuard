@@ -3,22 +3,43 @@
 # ==========================================================================
 # Cette liste est maintenue par CFC. Elle bloque les domaines d'arnaque
 # ciblant le Senegal : faux Wave / Orange Money, phishing, faux cadeaux,
-# fausses mises a jour, liens malveillants connus.
+# fausses mises a jour, liens pieges diffuses sur WhatsApp/reseaux sociaux.
 #
-# FORMAT (hosts) : une ligne par domaine, prefixee par 0.0.0.0
-#   0.0.0.0 domaine-a-bloquer.com
-#
-# Les lignes commencant par # sont des commentaires (ignorees).
-#
-# POUR CFC : ajoutez ici chaque domaine d'arnaque identifie, puis poussez
-# sur GitHub. Les applications installees se mettront a jour automatiquement
-# (telechargement quotidien). C'est la valeur unique de SunuGuard.
-#
-# Exemples (a remplacer par de vrais domaines identifies) :
-# 0.0.0.0 faux-wave-senegal.example
-# 0.0.0.0 orange-money-cadeau.example
-# 0.0.0.0 mise-a-jour-obligatoire.example
+# Les feeds internationaux (StevenBlack, HaGeZi) couvrent deja des millions
+# de domaines mondiaux, mis a jour chaque jour. CETTE liste-ci sert aux
+# arnaques LOCALES precises, verifiees par CFC et sa communaute, que les
+# feeds mondiaux ne connaissent pas encore.
 #
 # --------------------------------------------------------------------------
+# FORMAT (hosts) : une ligne par domaine, prefixee par 0.0.0.0
+#   0.0.0.0 domaine-a-bloquer.com
+# Les lignes commencant par # sont des commentaires (ignorees).
+#
+# --------------------------------------------------------------------------
+# PROCEDURE POUR CFC (comment ajouter une arnaque) :
+#   1. Un domaine d'arnaque est confirme (ex. faux lien Wave sur WhatsApp).
+#   2. VERIFIER que c'est bien malveillant (ne jamais bloquer un vrai site).
+#   3. Ajouter une ligne : 0.0.0.0 le-domaine-confirme.com
+#   4. Pousser sur GitHub. Les apps installees se mettent a jour sous 24h.
+#
+# IMPORTANT : ne jamais ajouter un domaine sans etre sur qu'il est malveillant.
+# Un faux positif casse l'acces a un vrai service pour tous les utilisateurs.
+#
+# --------------------------------------------------------------------------
+# SIGNALER une arnaque aux autorites (Senegal) :
+#   Plateforme DGPN : https://signalementcyber.dgpn.sn/
+#   Telephone Police : 17  ou  800 00 17 00
+#
+# --------------------------------------------------------------------------
+# RAPPEL A DIFFUSER (ingenierie sociale — qu'aucune app ne peut bloquer) :
+#   - Ne JAMAIS communiquer son code secret / OTP Wave ou Orange Money.
+#   - Un vrai agent Wave/Orange ne demande JAMAIS votre code par appel/SMS.
+#   - Se mefier des "cadeaux", "matchs/films gratuits", "argent facile".
+#
+# ==========================================================================
 # Entree de test (ne pas retirer — permet de verifier que la liste marche) :
 0.0.0.0 test-arnaque.sunuguard.cfc
+
+# --------------------------------------------------------------------------
+# Domaines d'arnaque confirmes par CFC (ajoutez vos entrees ci-dessous) :
+# 0.0.0.0 exemple-faux-wave.example

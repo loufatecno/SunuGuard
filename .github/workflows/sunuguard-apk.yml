@@ -3,6 +3,9 @@ name: Build SunuGuard APK (debug)
 on:
   push:
     branches: [ main ]
+    paths-ignore:
+      - 'blocklists/**'
+      - '**.md'
   workflow_dispatch:
 
 permissions:
