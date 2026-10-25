@@ -1,0 +1,19 @@
+# Android / Gradle
+*.iml
+.gradle/
+local.properties
+.idea/
+build/
+captures/
+.externalNativeBuild/
+.cxx/
+*.apk
+*.ap_
+*.aab
+
+# Rust (wgbridge)
+wgbridge-rs/target/
+target/
+
+# OS
+.DS_Store
