@@ -108,10 +108,6 @@ android {
             minifyEnabled = true
             shrinkResources = true
             proguardFiles.add(file('proguard-rules.pro'))
-            // SunuGuard : signer avec la cle CFC si fournie par la CI (secrets).
-            if (System.getenv("SIGNING_KEYSTORE_FILE") != null
-                    && !System.getenv("SIGNING_KEYSTORE_FILE").isEmpty())
-                signingConfig signingConfigs.release
         }
         debug {
             // Install debug builds alongside release builds on the same device
@@ -156,6 +152,13 @@ android {
             enableV1Signing = true
             enableV2Signing = true
         }
+    }
+
+    // SunuGuard : appliquer la cle CFC a la version release si fournie par la CI.
+    // Place apres signingConfigs pour que la config 'release' existe deja.
+    if (System.getenv("SIGNING_KEYSTORE_FILE") != null
+            && !System.getenv("SIGNING_KEYSTORE_FILE").isEmpty()) {
+        buildTypes.release.signingConfig = signingConfigs.release
     }
 
     compileOptions {
