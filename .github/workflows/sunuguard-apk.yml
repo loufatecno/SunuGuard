@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: sunuguard-apk-${{ github.ref }}
@@ -53,3 +53,15 @@ jobs:
           name: SunuGuard-debug-apk
           path: app/build/outputs/apk/github/debug/*.apk
           if-no-files-found: error
+
+      - name: Publish APK to rolling release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          APK=$(find app/build/outputs/apk/github/debug -name '*.apk' | head -1)
+          echo "APK trouve : $APK"
+          gh release delete latest-debug --repo "${{ github.repository }}" --yes --cleanup-tag 2>/dev/null || true
+          gh release create latest-debug "$APK" \
+            --repo "${{ github.repository }}" \
+            --title "SunuGuard — dernier APK de test" \
+            --notes "APK githubDebug genere automatiquement par GitHub Actions. Installer en autorisant les sources inconnues."
