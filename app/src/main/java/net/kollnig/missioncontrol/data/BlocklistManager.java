@@ -27,6 +27,9 @@ public class BlocklistManager {
     // SunuGuard (CFC) : listes anti-phishing/arnaque ajoutees par defaut (format hosts).
     public static final String CFC_THREATS_URL = "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/hosts/tif.txt";
     public static final String CFC_SENEGAL_SCAM_URL = "https://raw.githubusercontent.com/loufatecno/SunuGuard/main/blocklists/senegal-scams.txt";
+    // SunuGuard (CFC) : blocage des sites adultes / pornographiques (protection
+    // familiale/enfants). Activee par defaut, desactivable dans l'ecran des listes.
+    public static final String CFC_ADULT_URL = "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/hosts/nsfw.txt";
 
     /**
      * SunuGuard : seme les listes de blocage par defaut (pubs + malware + phishing
@@ -37,7 +40,7 @@ public class BlocklistManager {
         java.util.Set<String> urls = new java.util.HashSet<>();
         for (Blocklist b : list)
             urls.add(b.url);
-        String[] defaults = {DEFAULT_HOSTS_URL, CFC_THREATS_URL, CFC_SENEGAL_SCAM_URL};
+        String[] defaults = {DEFAULT_HOSTS_URL, CFC_THREATS_URL, CFC_SENEGAL_SCAM_URL, CFC_ADULT_URL};
         boolean changed = false;
         for (String u : defaults) {
             if (!TextUtils.isEmpty(u) && !urls.contains(u)) {
