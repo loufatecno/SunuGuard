@@ -24,6 +24,30 @@ public class BlocklistManager {
     private static final String TAG = "TrackerControl.Blocklist";
     private static final String PREF_BLOCKLISTS = "blocklists";
     public static final String DEFAULT_HOSTS_URL = "https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts";
+    // SunuGuard (CFC) : listes anti-phishing/arnaque ajoutees par defaut (format hosts).
+    public static final String CFC_THREATS_URL = "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/hosts/tif.txt";
+    public static final String CFC_SENEGAL_SCAM_URL = "https://raw.githubusercontent.com/loufatecno/SunuGuard/main/blocklists/senegal-scams.txt";
+
+    /**
+     * SunuGuard : seme les listes de blocage par defaut (pubs + malware + phishing
+     * + arnaques Senegal) si elles ne sont pas deja presentes. Toutes activees.
+     */
+    public void seedDefaults() {
+        List<Blocklist> list = getBlocklists();
+        java.util.Set<String> urls = new java.util.HashSet<>();
+        for (Blocklist b : list)
+            urls.add(b.url);
+        String[] defaults = {DEFAULT_HOSTS_URL, CFC_THREATS_URL, CFC_SENEGAL_SCAM_URL};
+        boolean changed = false;
+        for (String u : defaults) {
+            if (!TextUtils.isEmpty(u) && !urls.contains(u)) {
+                list.add(new Blocklist(u, true));
+                changed = true;
+            }
+        }
+        if (changed)
+            saveBlocklists(list);
+    }
 
     private static BlocklistManager instance;
     private final Context context;
@@ -163,10 +187,8 @@ public class BlocklistManager {
                     item.lastModified = prefs.getLong("hosts_last_download_time", 0); // Try to preserve if possible,
                                                                                       // otherwise 0
                     addBlocklist(item);
-                } else if (!TextUtils.isEmpty(DEFAULT_HOSTS_URL)) {
-                    // Should verify if we want to add default if prompt is empty? Likely yes.
-                    Blocklist item = new Blocklist(DEFAULT_HOSTS_URL, true);
-                    addBlocklist(item);
+                } else {
+                    seedDefaults();
                 }
             }
 
@@ -176,9 +198,8 @@ public class BlocklistManager {
             // If completely fresh install or no pref, ensure we have at least the default
             // list if list is empty
             List<Blocklist> currentList = getBlocklists();
-            if (currentList.isEmpty() && !TextUtils.isEmpty(DEFAULT_HOSTS_URL)) {
-                Blocklist item = new Blocklist(DEFAULT_HOSTS_URL, true);
-                addBlocklist(item);
+            if (currentList.isEmpty()) {
+                seedDefaults();
             }
         }
     }

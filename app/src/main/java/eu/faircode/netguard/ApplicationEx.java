@@ -143,6 +143,31 @@ public class ApplicationEx extends Application {
         } catch (Throwable ex) {
             Log.w(TAG, "Could not reconcile the hosts auto-update: " + ex);
         }
+        // SunuGuard (CFC) : activer la protection par listes des le premier lancement.
+        // Seme les listes par defaut (pubs/malware/phishing/arnaques Senegal),
+        // active la mise a jour quotidienne et declenche un telechargement immediat,
+        // pour que le blocage marche sans que l'utilisateur ait a tout configurer.
+        try {
+            if (!prefs.getBoolean("sunuguard_defaults_applied", false)) {
+                net.kollnig.missioncontrol.data.BlocklistManager.getInstance(this).seedDefaults();
+                prefs.edit().putBoolean("hosts_auto_update", true).apply();
+                HostsDownloadWorker.scheduleAutoUpdate(this, true);
+                androidx.work.OneTimeWorkRequest initialDownload =
+                        new androidx.work.OneTimeWorkRequest.Builder(HostsDownloadWorker.class)
+                                .setConstraints(new androidx.work.Constraints.Builder()
+                                        .setRequiredNetworkType(androidx.work.NetworkType.CONNECTED)
+                                        .build())
+                                .build();
+                androidx.work.WorkManager.getInstance(this).enqueueUniqueWork(
+                        "sunuguard_initial_download",
+                        androidx.work.ExistingWorkPolicy.KEEP,
+                        initialDownload);
+                prefs.edit().putBoolean("sunuguard_defaults_applied", true).apply();
+                Log.i(TAG, "SunuGuard: protection par defaut initialisee");
+            }
+        } catch (Throwable ex) {
+            Log.w(TAG, "SunuGuard default protection setup failed: " + ex);
+        }
         // A VPN the system killed leaves nothing in the app to notice, so the
         // check lives outside the service. Guarded like the reconcile above:
         // this is the startup path.

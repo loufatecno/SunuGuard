@@ -1,0 +1,24 @@
+# ==========================================================================
+# Liste anti-arnaque SunuGuard — Cisse Family Company (CFC)
+# ==========================================================================
+# Cette liste est maintenue par CFC. Elle bloque les domaines d'arnaque
+# ciblant le Senegal : faux Wave / Orange Money, phishing, faux cadeaux,
+# fausses mises a jour, liens malveillants connus.
+#
+# FORMAT (hosts) : une ligne par domaine, prefixee par 0.0.0.0
+#   0.0.0.0 domaine-a-bloquer.com
+#
+# Les lignes commencant par # sont des commentaires (ignorees).
+#
+# POUR CFC : ajoutez ici chaque domaine d'arnaque identifie, puis poussez
+# sur GitHub. Les applications installees se mettront a jour automatiquement
+# (telechargement quotidien). C'est la valeur unique de SunuGuard.
+#
+# Exemples (a remplacer par de vrais domaines identifies) :
+# 0.0.0.0 faux-wave-senegal.example
+# 0.0.0.0 orange-money-cadeau.example
+# 0.0.0.0 mise-a-jour-obligatoire.example
+#
+# --------------------------------------------------------------------------
+# Entree de test (ne pas retirer — permet de verifier que la liste marche) :
+0.0.0.0 test-arnaque.sunuguard.cfc
