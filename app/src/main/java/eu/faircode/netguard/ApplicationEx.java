@@ -148,7 +148,7 @@ public class ApplicationEx extends Application {
         // active la mise a jour quotidienne et declenche un telechargement immediat,
         // pour que le blocage marche sans que l'utilisateur ait a tout configurer.
         try {
-            if (prefs.getInt("sunuguard_defaults_version", 0) < 2) {
+            if (prefs.getInt("sunuguard_defaults_version", 0) < 3) {
                 net.kollnig.missioncontrol.data.BlocklistManager.getInstance(this).seedDefaults();
                 prefs.edit().putBoolean("hosts_auto_update", true).apply();
                 HostsDownloadWorker.scheduleAutoUpdate(this, true);
@@ -162,8 +162,8 @@ public class ApplicationEx extends Application {
                         "sunuguard_initial_download",
                         androidx.work.ExistingWorkPolicy.REPLACE,
                         initialDownload);
-                prefs.edit().putInt("sunuguard_defaults_version", 2).apply();
-                Log.i(TAG, "SunuGuard: listes de protection mises a jour (v2)");
+                prefs.edit().putInt("sunuguard_defaults_version", 3).apply();
+                Log.i(TAG, "SunuGuard: listes de protection mises a jour (v3)");
             }
         } catch (Throwable ex) {
             Log.w(TAG, "SunuGuard default protection setup failed: " + ex);

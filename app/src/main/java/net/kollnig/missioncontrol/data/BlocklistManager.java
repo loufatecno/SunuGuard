@@ -28,13 +28,15 @@ public class BlocklistManager {
     public static final String CFC_PHISHING_URL = "https://raw.githubusercontent.com/blocklistproject/Lists/master/phishing.txt";
     public static final String CFC_SCAM_URL = "https://raw.githubusercontent.com/blocklistproject/Lists/master/scam.txt";
     public static final String CFC_SENEGAL_SCAM_URL = "https://raw.githubusercontent.com/loufatecno/SunuGuard/main/blocklists/senegal-scams.txt";
-    // Blocage des sites adultes / pornographiques (protection enfants/famille).
-    public static final String CFC_ADULT_URL = "https://raw.githubusercontent.com/blocklistproject/Lists/master/porn.txt";
+    // Blocage des sites adultes (protection enfants/famille). Liste CFC compacte
+    // (grands sites adultes), hebergee dans le depot : rapide sur data mobile.
+    public static final String CFC_ADULT_URL = "https://raw.githubusercontent.com/loufatecno/SunuGuard/main/blocklists/adult.txt";
 
-    // Anciennes URLs cassees (404) a retirer des installations existantes.
+    // Anciennes URLs a retirer des installations existantes (cassees ou trop lourdes).
     private static final String[] BROKEN_URLS = {
             "hagezi/dns-blocklists/main/hosts/tif.txt",
-            "hagezi/dns-blocklists/main/hosts/nsfw.txt"
+            "hagezi/dns-blocklists/main/hosts/nsfw.txt",
+            "blocklistproject/Lists/master/porn.txt"
     };
 
     /**
