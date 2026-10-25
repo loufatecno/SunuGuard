@@ -70,6 +70,24 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:maxHeight="150dp"
+                android:scaleType="fitCenter"
+                android:layout_marginBottom="12dp"
+                android:importantForAccessibility="no"
+                android:src="@drawable/cfc_logo" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/cfc_about"
+                android:autoLink="all"
+                android:layout_marginBottom="16dp"
+                android:textAppearance="@style/TextSmall" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

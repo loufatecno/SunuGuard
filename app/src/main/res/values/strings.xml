@@ -851,4 +851,5 @@ Sincerely,\n\n]]></string>
     <string name="log_connection_wifi">Wi-Fi</string>
     <string name="log_connection_other">Other network</string>
     <string name="log_screen_on">Screen on</string>
+    <string name="cfc_about">SunuGuard — une réalisation Cissé Family Company (CFC).\n\nDéveloppé par : Fallou Cissé (Galasse)\nÉditeur : Cissé Family Company (CFC)\n\nTéléphone : +221 77 567 47 25\nEmail : cissefamilycompany@gmail.com\nSupport WhatsApp : https://wa.me/221775674725</string>
 </resources>
