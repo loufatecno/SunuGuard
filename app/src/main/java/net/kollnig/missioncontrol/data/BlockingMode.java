@@ -109,7 +109,10 @@ public class BlockingMode {
     }
 
     static boolean resolveTrackerProtection(boolean browser, Boolean configured) {
-        return configured == null ? !browser : configured;
+        // SunuGuard : protection active par defaut AUSSI pour les navigateurs
+        // (c'est la que se visitent pubs/sites adultes a bloquer). L'utilisateur
+        // peut desactiver par app si un site se casse.
+        return configured == null ? true : configured;
     }
 
     /**

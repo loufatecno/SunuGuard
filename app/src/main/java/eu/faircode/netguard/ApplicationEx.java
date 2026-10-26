@@ -148,9 +148,16 @@ public class ApplicationEx extends Application {
         // active la mise a jour quotidienne et declenche un telechargement immediat,
         // pour que le blocage marche sans que l'utilisateur ait a tout configurer.
         try {
-            if (prefs.getInt("sunuguard_defaults_version", 0) < 3) {
+            if (prefs.getInt("sunuguard_defaults_version", 0) < 4) {
                 net.kollnig.missioncontrol.data.BlocklistManager.getInstance(this).seedDefaults();
                 prefs.edit().putBoolean("hosts_auto_update", true).apply();
+                // SunuGuard : mode STANDARD (sinon le mode MINIMAL par defaut IGNORE
+                // les listes hosts) + blocage par domaine, pour que pubs/phishing/
+                // arnaques/sites adultes soient reellement bloques.
+                prefs.edit()
+                        .putString("blocking_mode", "standard")
+                        .putBoolean("domain_based_blocking", true)
+                        .apply();
                 HostsDownloadWorker.scheduleAutoUpdate(this, true);
                 androidx.work.OneTimeWorkRequest initialDownload =
                         new androidx.work.OneTimeWorkRequest.Builder(HostsDownloadWorker.class)
@@ -162,8 +169,8 @@ public class ApplicationEx extends Application {
                         "sunuguard_initial_download",
                         androidx.work.ExistingWorkPolicy.REPLACE,
                         initialDownload);
-                prefs.edit().putInt("sunuguard_defaults_version", 3).apply();
-                Log.i(TAG, "SunuGuard: listes de protection mises a jour (v3)");
+                prefs.edit().putInt("sunuguard_defaults_version", 4).apply();
+                Log.i(TAG, "SunuGuard: protection activee en mode standard (v4)");
             }
         } catch (Throwable ex) {
             Log.w(TAG, "SunuGuard default protection setup failed: " + ex);
